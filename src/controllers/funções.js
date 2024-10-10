@@ -1,59 +1,37 @@
-const Time = require("../models/controletimes");
+import Vivo from '../models/vivoModel.js'; 
 
-async function criarTime(req, res) {
-    const { nome, valor, artilheiros } = req.body;
+export const store = async (req, res) => { 
     try {
-        const novoTime = new Time({ nome, valor, artilheiros });
-        const timeSalvo = await novoTime.save();
-        res.status(201).json({ mensagem: "Time criado com sucesso", time: timeSalvo });
-    } catch (erro) {
-        res.status(500).json({ mensagem: "Erro ao criar time", erro: erro.message });
+        const vivo = await Vivo.create(req.body);
+        return res.status(201).json(vivo);
+    } catch (error) {
+        return res.status(400).json({ message: error.message });
     }
-}
+};
 
-async function listarTimes(req, res) {
+export const index = async (req, res) => { 
     try {
-        const times = await Time.find();
-        res.status(200).json(times);
-    } catch (erro) {
-        res.status(500).json({ mensagem: "Erro ao obter times", erro: erro.message });
+        const vivos = await Vivo.find().exec(); //.exec() por que faz uma busca no banco
+        return res.status(200).json(vivos);
+    } catch (error) {
+        return res.status(400).json({ message: error.message });
     }
-}
+};
 
-async function atualizarTime(req, res) {
-    const { id } = req.params;
-    const { nome, valor, artilheiros } = req.body; // Alterar para artilheiros se necessário
+export const update = async (req, res) => { 
     try {
-        const timeAtualizado = await Time.findByIdAndUpdate(
-            id,
-            { nome, valor, artilheiros }, // Alterar para artilheiros se necessário
-            { new: true, runValidators: true }
-        );
-        if (timeAtualizado) {
-            res.status(200).json({
-                mensagem: "Time atualizado com sucesso!",
-                time: timeAtualizado,
-            });
-        } else {
-            res.status(404).json({ mensagem: "O time não foi encontrado..." });
-        }
-    } catch (erro) {
-        res.status(500).json({ mensagem: "Erro na atualização do time", erro: erro.message });
+        const vivo = await Vivo.findByIdAndUpdate(req.params.id, req.body).exec();
+        return res.status(200).json(vivo);
+    } catch (error) {
+        return res.status(400).json({ message: error.message });
     }
-}
+};
 
-async function deletarTime(req, res) {
-    const { id } = req.params;
+export const destroy = async (req, res) => { 
     try {
-        const timeDeletado = await Time.findByIdAndDelete(id);
-        if (timeDeletado) {
-            res.status(200).json({ mensagem: "Time deletado com sucesso", time: timeDeletado });
-        } else {
-            res.status(404).json({ mensagem: "O time não foi encontrado..." });
-        }
-    } catch (erro) {
-        res.status(500).json({ mensagem: "Erro ao deletar o time", erro: erro.message });
+        const vivo = await Vivo.findByIdAndDelete(req.params.id).exec();
+        return res.status(200).json(vivo);
+    } catch (error) {
+        return res.status(400).json({ message: error.message });
     }
-}
-
-module.exports = { criarTime, listarTimes, atualizarTime, deletarTime };
+};
