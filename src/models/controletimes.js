@@ -1,16 +1,25 @@
-const mongoose = require("mongoose");
-const timeSchema = new mongoose.Schema({
-    nome: { 
-        type: String, 
-        required: true },
-    valor: 
-    { type: Number, 
-        required: true },
-    artilheiros: 
-    { type: String, 
-        required: true },
-   
-  });
-  const Time = mongoose.model("Time", timeSchema);
+import { Schema, model } from 'mongoose'; 
 
-  module.exports = Time
+
+const enterroSchema = new Schema({
+    data: {
+        type: Date,
+        required: true
+    },
+    local: {
+        type: String,
+        required: true
+    },
+    vivo: {
+        type: Schema.Types.ObjectId, 
+        ref: 'Vivo',
+        required: true
+    },
+    morto: {
+        type: Schema.Types.ObjectId,
+        ref: 'Morto',
+        required: true
+    }
+});
+
+export default model('Enterro', enterroSchema);
